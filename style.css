@@ -1,0 +1,992 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #c0e4f5, #a1d4e8);
+      overflow: hidden;
+      position: relative;
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -50px;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3) 60%, rgba(255, 255, 255, 0));
+      box-shadow:
+        0 0 10px 2px rgba(255, 255, 255, 0.6),
+        inset 0 0 5px 1px rgba(255, 255, 255, 0.8);
+      z-index: 500;
+      transition: opacity 0.5s linear, filter 0.5s linear;
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateX(0) translateY(0) scale(1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateX(15px) translateY(-130vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    .site-name {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+      z-index: 1000;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .site-name i {
+      font-size: 28px;
+      color: #fff;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+    }
+
+    /* Navigation Menu Styles */
+    .nav-menu {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .menu-btn {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .menu-btn:hover {
+      background: white;
+      transform: scale(1.05);
+    }
+
+    .menu-line {
+      width: 20px;
+      height: 2px;
+      background: #2a5d7a;
+      transition: all 0.3s ease;
+    }
+
+    .glass-panel {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 20px;
+      box-shadow: 
+        0 12px 40px rgba(31, 38, 135, 0.25),
+        inset 0 4px 15px rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      user-select: none;
+      transition: all 0.3s ease;
+    }
+
+    .panel-header {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 15px;
+      user-select: none;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .panel-header p {
+      font-weight: 700;
+      font-size: 22px;
+      color: #2a5d7a;
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.6);
+      text-align: center;
+    }
+
+    .back-arrow {
+      position: absolute;
+      left: 10px;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.8);
+      color: #2a5d7a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.1),
+        inset 0 2px 3px rgba(255, 255, 255, 0.8);
+      transition: all 0.3s ease;
+      z-index: 1001;
+      visibility: hidden;
+      line-height: 1;
+    }
+
+    .back-arrow:hover {
+      background: white;
+      transform: translateX(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .vitamin-circles {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 6px;
+      width: 100%;
+      justify-items: center;
+      box-sizing: border-box;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .vitamin-circle {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: white;
+      color: #333;
+      font-weight: bold;
+      font-size: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s ease, box-shadow 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+
+    .vitamin-circle:active {
+      transform: scale(0.95);
+    }
+
+    /* التعديل على فيتامين K كما طلبت */
+    .vitamin-circle.k {
+      grid-column: 2 / 4;
+      margin-top: -7px;
+    }
+
+    /* Detailed view */
+    .vitamin-detail, .page-content, .menu-content, .food-detail, .all-sources {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .vitamin-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .vitamin-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #ffffff, #e6f0ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 800;
+      color: #2a5d7a;
+      box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.1),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .vitamin-info {
+      flex: 1;
+      text-align: center;
+    }
+
+    .vitamin-name {
+      font-size: 24px;
+      font-weight: 800;
+      color: #2a5d7a;
+      margin-bottom: 5px;
+    }
+
+    .vitamin-scientific {
+      font-size: 16px;
+      color: #4a7a9c;
+      margin-bottom: 10px;
+    }
+
+    .detail-section, .page-section, .food-section {
+      margin-bottom: 15px;
+      background: rgba(255, 255, 255, 0.35);
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2a5d7a;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid rgba(42, 93, 122, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title i {
+      font-size: 16px;
+      color: #4a7a9c;
+    }
+
+    .section-content {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #333;
+    }
+
+    /* تحسين النقاط التعدادية */
+    .benefits-list, .deficiency-list, .overdose-list, .interactions-list,
+    .about-list, .vitamins-list {
+      padding-right: 0;
+      margin-top: 8px;
+      list-style-type: none;
+    }
+
+    .benefits-list li, .deficiency-list li, .overdose-list li, .interactions-list li,
+    .about-list li, .vitamins-list li {
+      margin-bottom: 8px;
+      position: relative;
+      padding-right: 20px;
+    }
+
+    .benefits-list li::before,
+    .deficiency-list li::before,
+    .overdose-list li::before,
+    .interactions-list li::before,
+    .about-list li::before,
+    .vitamins-list li::before {
+      content: "•";
+      color: #2a5d7a;
+      font-weight: bold;
+      position: absolute;
+      right: 0;
+    }
+
+    /* التعديلات على قوائم الشروط والأحكام كما طلبت */
+    .terms-list {
+      padding-right: 20px;
+      list-style-type: disc; /* نقاط عربية */
+      margin-top: 10px;
+    }
+
+    .terms-list li {
+      margin-bottom: 8px;
+      position: relative;
+      padding-right: 10px;
+      line-height: 1.5;
+    }
+
+    .sources-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .source-item-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .source-item {
+      background: rgba(255, 255, 255, 0.6);
+      padding: 8px 15px;
+      border-radius: 50px;
+      font-size: 14px;
+      color: #2a5d7a;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .source-item:hover {
+      background: white;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .source-info {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+      color: #2a5d7a;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .source-amount {
+      font-size: 12px;
+      color: #4a7a9c;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    .daily-value {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .value-label {
+      font-weight: 600;
+      color: #2a5d7a;
+    }
+
+    .value-amount {
+      font-weight: 700;
+      color: #4a7a9c;
+      font-family: monospace;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.5);
+      font-size: 12px;
+      color: #4a7a9c;
+    }
+
+    /* Scrollbar styling */
+    .panel-body::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .panel-body::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    .panel-body::-webkit-scrollbar-thumb {
+      background: rgba(42, 93, 122, 0.5);
+      border-radius: 10px;
+    }
+
+    .panel-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(42, 93, 122, 0.7);
+    }
+
+    .unit-explanation {
+      font-size: 12px;
+      color: #4a7a9c;
+      margin-top: 5px;
+      text-align: center;
+      border-top: 1px dashed rgba(74, 122, 156, 0.3);
+      padding-top: 5px;
+    }
+
+    .toxicity-info {
+      background: rgba(211, 84, 0, 0.05);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #d35400;
+    }
+
+    .toxicity-info-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .toxicity-icon {
+      width: 30px;
+      height: 30px;
+      background-color: #d35400;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .toxicity-title {
+      font-weight: 700;
+      color: #d35400;
+      font-size: 16px;
+    }
+
+    .toxicity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .toxicity-item {
+      background: rgba(255, 255, 255, 0.4);
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .toxicity-label {
+      font-size: 13px;
+      color: #7f8c8d;
+      margin-bottom: 3px;
+    }
+
+    .toxicity-value {
+      font-weight: 700;
+      color: #2c3e50;
+      font-size: 14px;
+    }
+
+    .toxicity-warning {
+      background: rgba(231, 76, 60, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #c0392b;
+      display: flex;
+      gap: 8px;
+    }
+
+    .overdose-section {
+      background: rgba(231, 76, 60, 0.05);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #e74c3c;
+    }
+
+    .overdose-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      color: #e74c3c;
+      font-weight: 700;
+    }
+
+    .overdose-icon {
+      width: 30px;
+      height: 30px;
+      background-color: #e74c3c;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .overdose-symptoms {
+      padding-right: 0;
+      margin-top: 10px;
+      list-style-type: none;
+    }
+
+    .overdose-symptoms li {
+      margin-bottom: 8px;
+      position: relative;
+      padding-right: 20px;
+    }
+
+    .overdose-symptoms li::before {
+      content: "•";
+      color: #e74c3c;
+      font-weight: bold;
+      position: absolute;
+      right: 0;
+    }
+
+    .menu-content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-radius: 15px;
+      padding: 15px;
+    }
+
+    .menu-item {
+      padding: 12px 15px;
+      color: #2a5d7a;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .menu-item:hover {
+      background: white;
+      padding-right: 20px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    .menu-item i {
+      margin-left: 10px;
+      font-size: 16px;
+    }
+
+    /* تنسيق صفحة المصادر الغذائية */
+    .all-sources-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .all-source-item-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .all-source-info {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+      color: #2a5d7a;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .all-source-item {
+      background: rgba(255, 255, 255, 0.6);
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .all-source-item:hover {
+      background: white;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    .all-source-name {
+      font-weight: 700;
+      color: #2a5d7a;
+      margin-top: 8px;
+    }
+
+    .all-source-emoji {
+      font-size: 24px;
+    }
+
+    /* تنسيق صفحة تفاصيل المصدر الغذائي */
+    .food-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .food-emoji {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    .food-name {
+      font-size: 24px;
+      font-weight: 800;
+      color: #2a5d7a;
+    }
+
+    .vitamin-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 8px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .vitamin-bar-label {
+      width: 50px;
+      font-weight: 700;
+      color: #2a5d7a;
+      font-size: 14px;
+    }
+
+    .vitamin-bar-container {
+      flex: 1;
+      height: 20px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0 10px;
+    }
+
+    .vitamin-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4a7a9c, #2a5d7a);
+      border-radius: 10px;
+      transition: width 1s ease;
+    }
+
+    .vitamin-bar-value {
+      width: 70px;
+      text-align: left;
+      font-weight: 600;
+      color: #4a7a9c;
+      font-size: 14px;
+    }
+
+    .food-vitamins {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .food-vitamin-item {
+      background: rgba(255,255,255,0.4);
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .food-vitamin-name {
+      font-weight: 700;
+      color: #2a5d7a;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .food-vitamin-amount {
+      font-size: 14px;
+      color: #4a7a9c;
+    }
+
+    .food-description {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .nutritional-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .nutrition-item {
+      background: rgba(255,255,255,0.4);
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .nutrition-label {
+      font-size: 13px;
+      color: #4a7a9c;
+      margin-bottom: 5px;
+    }
+
+    .nutrition-value {
+      font-weight: 700;
+      color: #2a5d7a;
+      font-size: 16px;
+    }
+
+    .similar-foods {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+    }
+
+    .similar-foods-title {
+      font-weight: 700;
+      color: #2a5d7a;
+      margin-bottom: 10px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .similar-foods-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .similar-food-item {
+      background: rgba(255,255,255,0.5);
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      cursor: pointer;
+    }
+
+    .similar-food-item:hover {
+      background: white;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    .similar-food-name {
+      font-size: 14px;
+      color: #2a5d7a;
+      margin-top: 5px;
+    }
+
+    .percentage-bar {
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+
+    .percentage-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4a7a9c, #2a5d7a);
+      border-radius: 3px;
+    }
+
+    .percentage-value {
+      font-size: 12px;
+      color: #4a7a9c;
+      margin-top: 3px;
+    }
+
+    /* تحسينات جديدة للصفحات الغذائية */
+    .food-detail-container {
+      padding-bottom: 10px;
+    }
+
+    .food-health-benefits {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .benefit-item {
+      background: rgba(255, 255, 255, 0.4);
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .benefit-emoji {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .benefit-text {
+      font-size: 13px;
+      color: #2a5d7a;
+    }
+
+    .preparation-tips {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+    }
+
+    .tips-list {
+      padding-right: 20px;
+      margin-top: 10px;
+      list-style-type: none;
+    }
+
+    .tips-list li {
+      margin-bottom: 8px;
+      position: relative;
+      padding-right: 20px;
+      line-height: 1.5;
+    }
+
+    .tips-list li::before {
+      content: "•";
+      color: #2a5d7a;
+      font-weight: bold;
+      position: absolute;
+      right: 0;
+    }
+
+    .empty-data-message {
+      text-align: center;
+      padding: 20px;
+      color: #7f8c8d;
+      font-style: italic;
+    }
+
+    .health-benefits-title {
+      font-weight: 700;
+      color: #2a5d7a;
+      margin-bottom: 10px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .preparation-title {
+      font-weight: 700;
+      color: #2a5d7a;
+      margin-bottom: 10px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* التعديلات الجديدة للكمبيوتر */
+    @media (min-width: 1024px) {
+      .glass-panel {
+        width: 400px;
+        height: 400px;
+      }
+      
+      .vitamin-circle {
+        width: 70px;
+        height: 70px;
+        font-size: 24px;
+      }
+      
+      .panel-header p {
+        font-size: 26px;
+      }
+      
+      .vitamin-icon {
+        width: 90px;
+        height: 90px;
+        font-size: 40px;
+      }
+      
+      .vitamin-name {
+        font-size: 28px;
+      }
+      
+      .vitamin-scientific {
+        font-size: 18px;
+      }
+      
+      .section-title {
+        font-size: 20px;
+      }
+      
+      .section-content, .benefits-list li, .deficiency-list li, 
+      .overdose-symptoms li, .interactions-list li, .source-item,
+      .daily-value, .footer-note, .section-content p, 
+      .toxicity-label, .toxicity-value, .overdose-title,
+      .terms-list li, .about-list li, .menu-item {
+        font-size: 16px;
+      }
+      
+      .source-item {
+        padding: 10px 18px;
+      }
+    }
